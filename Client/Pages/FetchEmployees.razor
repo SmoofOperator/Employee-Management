@@ -1,0 +1,85 @@
+﻿@page "/fetchemployees"
+@inject HttpClient Http
+@inject NavigationManager NavManager
+@using EmployeeManagement.Shared
+
+<PageTitle>Employees</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Employees</MudText>
+<MudText Class="mb-8">This component demonstrates fetching data from the server.</MudText>
+@if (Employees == null)
+{
+    <MudSimpleTable Hover="true" Elevation="0">
+        <thead>
+            <tr>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Email</th>
+                <th>Date of Birth</th>
+                <th>Gender</th
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="6"><MudSkeleton Animation="Animation.Pulse"/></td>
+            </tr>
+            <tr>
+                <td colspan="6"><MudSkeleton Animation="Animation.Pulse"/></td>
+            </tr>
+            <tr>
+                <td colspan="6"><MudSkeleton Animation="Animation.Pulse"/></td>
+            </tr>
+        </tbody>
+    </MudSimpleTable>
+
+    <div class="d-flex align-center flex-column ma-10">
+            <MudProgressCircular Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true" />
+            <MudText Typo="Typo.subtitle1" Class="mt-4 text-center">Data is loading...</MudText>
+    </div>
+}
+else
+{
+    <MudTable Items="Employees" Hover="true" SortLabel="Sort By" Breakpoint="Breakpoint.Sm" @ref="mudTable" OnRowClick="RowClickEvent" T="Employee" Elevation="0">
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<Employee, object>(x=>x.EmployeeId)">Id</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Employee, object>(x=>x.FirstName)">First Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Employee, object>(x=>x.LastName)">Last Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Employee, object>(x=>x.Email)">Email</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Employee, object>(x=>x.DateOfBirth)">Date of Birth</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<Employee, object>(x=>x.Gender)">Gender</MudTableSortLabel></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.EmployeeId</MudTd>
+            <MudTd DataLabel="Name">@context.FirstName</MudTd>
+            <MudTd DataLabel="Name">@context.LastName</MudTd>
+            <MudTd DataLabel="Name">@context.Email</MudTd>
+            <MudTd DataLabel="Name">@context.DateOfBirth</MudTd>
+            <MudTd DataLabel="Name">@context.Gender</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[]{50, 100}" />
+        </PagerContent>
+    </MudTable>
+}
+
+
+@code {
+    public List<Employee> Employees { get; set; }
+
+    private MudTable<Employee> mudTable;
+    private string clickedEvent = "";
+    private int selectedRowNumber = -1;
+
+    [Inject]
+    public IEmployeeService EmployeeService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Employees = (await EmployeeService.GetEmployees()).ToList();
+    }
+ 
+    private void RowClickEvent(TableRowClickEventArgs<Employee> tableRowClickEventArgs)
+    {
+        NavManager.NavigateTo($"/employeedetails/{tableRowClickEventArgs.Item.EmployeeId}");
+    }
+}
