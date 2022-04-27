@@ -1,0 +1,105 @@
+﻿@page "/employeedetails/{id}"
+
+@if (Employee == null || Employee.Department == null)
+{
+    <MudContainer Class="d-flex align-center flex-column ma-10">
+        <MudProgressCircular Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true" />
+        <MudText Typo="Typo.subtitle1" Class="mt-4 text-center">Data is loading...</MudText>
+    </MudContainer>
+}
+else
+{
+    <MudGrid>
+        <MudItem xs="12" sm="12" md="6" lg="4">
+            <MudPaper Class="mud-height-full pa-5">
+                <MudStack Justify="Justify.Center" Style="height:auto;" Row="true" Class="pb-5">
+                    <MudImage Src="@Employee.PhotoPath" Width="150" Style="height:auto;" Class="rounded-circle" />
+                    <MudStack Justify="Justify.Center" Spacing="0">
+                        <MudText Typo="Typo.body1">@Employee.FirstName @Employee.LastName</MudText>
+                        <MudText Typo="Typo.body2">@Employee.Email</MudText>
+                    </MudStack>
+                </MudStack>
+                <MudDivider/>
+                <MudStack Justify="Justify.SpaceEvenly" Row="true" Spacing="6" Class="pt-5">
+                    <MudStack>
+                        <MudText Typo="Typo.body1"><b>Employee ID:</b></MudText>
+                        <MudText Typo="Typo.body1"><b>Department:</b></MudText>
+                        <MudText Typo="Typo.body1"><b>Date of Birth:</b></MudText>
+                        <MudText Typo="Typo.body1"><b>Gender:</b></MudText>  
+                        <MudText Typo="Typo.body1"><b>Address:</b></MudText>
+                        <MudText Typo="Typo.body1"><b>Employee Status:</b></MudText>
+                    </MudStack>
+                    <MudStack>
+                        <MudText Typo="Typo.body1">@Employee.EmployeeId</MudText>
+                        <MudText Typo="Typo.body1">@Employee.Department.DepartmentName</MudText>
+                        <MudText Typo="Typo.body1">@Employee.DateOfBirth.ToShortDateString()</MudText>
+                        <MudText Typo="Typo.body1">@Employee.Gender</MudText>
+                        <MudText Typo="Typo.body1">123 Street</MudText>
+                        <MudText Typo="Typo.body1">Active</MudText>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="6" lg="4">
+            <MudPaper Class="d-flex align-center justify-center pa-5 mud-height-full">
+                <MudStack Class="">
+                    <MudText Class="d-flex align-center justify-center" Typo="Typo.body1">Selected portion of the chart: @Index</MudText>
+                    <MudChart ChartType="ChartType.Pie" InputData="@piechartData" @bind-SelectedIndex="Index" InputLabels="@piechartLabels" Height="50%" Style="width:auto;" />      
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="6" lg="4">
+            <MudPaper Class="d-flex align-center justify-center mud-height-full pa-5">
+                <MudStack>
+                    <MudText Align="Align.Center">Attendance</MudText>
+                    <MudChart ChartType="ChartType.Donut" Width="100%" Style="height:auto;" InputData="@donutData" InputLabels="@donutLabels">
+                    	<CustomGraphics>
+                    		<text class="donut-inner-text" x="47%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Total hours</text>
+                    		<text class="donut-inner-text" x="47%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@donutData.Sum().ToString()</text>
+                    	</CustomGraphics>
+                    </MudChart>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="6" lg="6">
+            <MudPaper Class="mud-height-full pa-5" Style="background-color: lightcoral;">
+                <MudStack Row="true" Class="pl-5 pr-5 pb-5">
+                    <MudText Style="color: white;">Calendar</MudText>
+                    <MudSpacer/>
+                    <MudButtonGroup DisableElevation="true" Variant="Variant.Filled" Class="text-white" Style="background-color: lightpink; text-transform:none;">
+                        <MudButton Style="text-transform:none; color: white;" DisableElevation="true" Disabled="@OnDaily" OnClick="@ToggleCalendar">Daily</MudButton>
+                        <MudButton Style="text-transform:none; color: white;" DisableElevation="true" Disabled="@OnWeekly" OnClick="@ToggleCalendar">Weekly</MudButton>
+                    </MudButtonGroup>
+                </MudStack>
+                <MudPaper Class="pa-2">
+                    <MudList Clickable="true">
+                        <MudListItem Text="Women's Day Celebration" Icon="@Icons.Material.Filled.CalendarToday">
+                            <MudText Color="Color.Error">Women's Day Celebration</MudText> in Cafeteria
+                            <MudText Style="font-size: 0.8em; color: lightgray;">8th March, 3:30pm</MudText>
+                        </MudListItem>                       
+                        <MudDivider Class="my-3" />
+                        <MudListItem Text="Women's Day Celebration" Icon="@Icons.Material.Filled.CalendarToday">
+                            <MudText Color="Color.Error">Flash Mob</MudText> near J Row
+                            <MudText Style="font-size: 0.8em; color: lightgray;">8th March, 5:30pm</MudText>
+                        </MudListItem>
+                        <MudDivider Class="my-3" />
+                        <MudListItem Text="Women's Day Celebration" Icon="@Icons.Material.Filled.CalendarToday">
+                            <MudText Color="Color.Error">Mum's Birthday</MudText> at home
+                            <MudText Style="font-size: 0.8em; color: lightgray;">8th March, 8:30pm</MudText>
+                        </MudListItem>
+                    </MudList>
+                </MudPaper>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="12" lg="6" Class="mud-width-full">
+            <MudPaper Class="mud-height-full pa-10">
+                <MudStack>
+                    <MudText Align="Align.Center">Time allocation</MudText>
+                    <MudItem>
+                        <MudChart ChartType="ChartType.Line" ChartSeries="@Series" XAxisLabels="@XAxisLabels" Width="100%"/>
+                    </MudItem>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
